@@ -1,159 +1,30 @@
-let get_Students = async (URL) => {
-  let response = await fetch(URL);
-  let data = await response.json();
-  return data;
-};
+let students_name = [];
+let school_info = [];
 
-async function renderData() {
-  let students_name = [
-    {
-      firstName: "Marcus",
-      lastName: "Green",
-      age: "29",
-      hobbies: ["football"],
-      programme: "Frontend"
-    },
-    {
-      firstName: "Cassandra",
-      lastName: "White",
-      age: "18",
-      hobbies: ["chess", "gaming", "drawing"],
-      programme: "Backend"
-    },
-    {
-      firstName: "Hannah",
-      lastName: "Red",
-      age: "24",
-      hobbies: ["basketball", "gaming"],
-      programme: ".NET"
-    },
-    {
-      firstName: "Winston",
-      lastName: "Black",
-      age: "21",
-      hobbies: ["basketball", "football"],
-      programme: "Frontend"
-    },
-    {
-      firstName: "Maria",
-      lastName: "Scarlet",
-      age: "19",
-      hobbies: ["drawing", "chess"],
-      programme: "Backend"
-    },
-    {
-      firstName: "Ash",
-      lastName: "Yellow",
-      age: "35",
-      hobbies: ["gaming", "football"],
-      programme: ".NET"
-    },
-    {
-      firstName: "Leona",
-      lastName: "Grey",
-      age: "42",
-      hobbies: ["chess"],
-      programme: ".NET"
-    },
-    {
-      firstName: "Fiona",
-      lastName: "Grey",
-      age: "29",
-      hobbies: ["football"],
-      programme: "Backend"
-    },
-    {
-      firstName: "Anna",
-      lastName: "Forest",
-      age: "21",
-      hobbies: ["drawing"],
-      programme: "Frontend"
-    },
-    {
-      firstName: "Neshin",
-      lastName: "Pink",
-      age: "20",
-      hobbies: ["chess"],
-      programme: "Backend"
-    },
-    {
-      firstName: "Orlando",
-      lastName: "Beige",
-      age: "24",
-      hobbies: ["basketball", "drawing"],
-      programme: "Frontend"
-    }
-  ];
-  // let students_name = await get_Students(
-  //   " https://api.mocki.io/v2/01047e91/students"
-  // );
-  let student_education = students_name;
-
-  let school_info = [
-    {
-      name: "Fun School",
-      activities: ["drawing", "chess", "football", "basketball", "gaming"],
-      programmes: []
-    },
-    {
-      name: "Data School",
-      activities: ["drawing", "chess", "gaming"],
-      programmes: [".NET", "Frontend"]
-    },
-    {
-      name: "Makrosoft School",
-      activities: ["football", "gaming"],
-      programmes: ["Backend", ".NET"]
-    },
-    {
-      name: "Boring School",
-      activities: "No activities",
-      programmes: ["Frontend", "Backend"]
-    },
-    {
-      name: "Frontend School",
-      activities: ["drawing", "basketball"],
-      programmes: ["Frontend"]
-    }
-  ];
-
-  // let school_info = await get_Students(
-  //   " https://api.mocki.io/v2/01047e91/schools"
-  // );
-
-  let edu_list = document.querySelector("#education");
-  let sort_list = document.querySelector("#age_names");
-  let getSchoolBtn = document.querySelector("#getSchool");
-
+function listStudents(students_name) {
   students_name.forEach((student) => {
     let li = document.createElement("li");
     li.textContent = student.firstName + " " + student.lastName;
     document.querySelector("#studentList").appendChild(li);
   });
+}
+
+function filterStudentsEdu() {
+  let student_edu;
+  let edu_list = document.querySelector("#education");
 
   let frontend = document.createElement("button");
   let backend = document.createElement("button");
   let net = document.createElement("button");
-  let age_button = document.createElement("button");
-  let firstname_btn = document.createElement("button");
-  let lastname_btn = document.createElement("button");
-
   frontend.textContent = "Frontend";
   backend.textContent = "Backend";
   net.textContent = ".NET";
-  age_button.textContent = "Age";
-  firstname_btn.textContent = "Firstname";
-  lastname_btn.textContent = "Lastname";
-
   document.querySelector("#filters").append(frontend, backend, net);
-  document
-    .querySelector("#other_buttons")
-    .append(age_button, firstname_btn, lastname_btn);
-  let student_edu;
+
   //show students based on education == frontend
   frontend.addEventListener("click", () => {
     edu_list.innerHTML = "";
-    student_education.forEach((edu) => {
+    students_name.forEach((edu) => {
       if (edu.programme === "Frontend") {
         student_edu = document.createElement("li");
         student_edu.textContent = edu.firstName;
@@ -164,7 +35,7 @@ async function renderData() {
   //show students based on education == backend
   backend.addEventListener("click", () => {
     edu_list.innerHTML = "";
-    student_education.forEach((edu) => {
+    students_name.forEach((edu) => {
       if (edu.programme === "Backend") {
         student_edu = document.createElement("li");
         student_edu.textContent = edu.firstName;
@@ -176,7 +47,7 @@ async function renderData() {
 
   net.addEventListener("click", () => {
     edu_list.innerHTML = "";
-    student_education.forEach((edu) => {
+    students_name.forEach((edu) => {
       if (edu.programme === ".NET") {
         student_edu = document.createElement("li");
         student_edu.textContent = edu.firstName;
@@ -184,6 +55,23 @@ async function renderData() {
       }
     });
   });
+}
+
+function filterStudents(school_info) {
+  let sort_list = document.querySelector("#age_names");
+  let getSchoolBtn = document.querySelector("#getSchool");
+
+  let age_button = document.createElement("button");
+  let firstname_btn = document.createElement("button");
+  let lastname_btn = document.createElement("button");
+
+  age_button.textContent = "Age";
+  firstname_btn.textContent = "First name";
+  lastname_btn.textContent = "Last name";
+  document
+    .querySelector("#other_buttons")
+    .append(age_button, firstname_btn, lastname_btn);
+
   //sort students by age (ascending order)
   age_button.addEventListener("click", () => {
     sort_list.innerHTML = "";
@@ -294,4 +182,129 @@ async function renderData() {
   });
 }
 
+async function renderData() {
+  let get_Students = async (URL) => {
+    let response = await fetch(URL);
+    let data = await response.json();
+    return data;
+  };
+  students_name = [
+    {
+      firstName: "Marcus",
+      lastName: "Green",
+      age: "29",
+      hobbies: ["football"],
+      programme: "Frontend"
+    },
+    {
+      firstName: "Cassandra",
+      lastName: "White",
+      age: "18",
+      hobbies: ["chess", "gaming", "drawing"],
+      programme: "Backend"
+    },
+    {
+      firstName: "Hannah",
+      lastName: "Red",
+      age: "24",
+      hobbies: ["basketball", "gaming"],
+      programme: ".NET"
+    },
+    {
+      firstName: "Winston",
+      lastName: "Black",
+      age: "21",
+      hobbies: ["basketball", "football"],
+      programme: "Frontend"
+    },
+    {
+      firstName: "Maria",
+      lastName: "Scarlet",
+      age: "19",
+      hobbies: ["drawing", "chess"],
+      programme: "Backend"
+    },
+    {
+      firstName: "Ash",
+      lastName: "Yellow",
+      age: "35",
+      hobbies: ["gaming", "football"],
+      programme: ".NET"
+    },
+    {
+      firstName: "Leona",
+      lastName: "Grey",
+      age: "42",
+      hobbies: ["chess"],
+      programme: ".NET"
+    },
+    {
+      firstName: "Fiona",
+      lastName: "Grey",
+      age: "29",
+      hobbies: ["football"],
+      programme: "Backend"
+    },
+    {
+      firstName: "Anna",
+      lastName: "Forest",
+      age: "21",
+      hobbies: ["drawing"],
+      programme: "Frontend"
+    },
+    {
+      firstName: "Neshin",
+      lastName: "Pink",
+      age: "20",
+      hobbies: ["chess"],
+      programme: "Backend"
+    },
+    {
+      firstName: "Orlando",
+      lastName: "Beige",
+      age: "24",
+      hobbies: ["basketball", "drawing"],
+      programme: "Frontend"
+    }
+  ];
+  // let students_name = await get_Students(
+  //   " https://api.mocki.io/v2/01047e91/students"
+  // );
+
+  school_info = [
+    {
+      name: "Fun School",
+      activities: ["drawing", "chess", "football", "basketball", "gaming"],
+      programmes: []
+    },
+    {
+      name: "Data School",
+      activities: ["drawing", "chess", "gaming"],
+      programmes: [".NET", "Frontend"]
+    },
+    {
+      name: "Makrosoft School",
+      activities: ["football", "gaming"],
+      programmes: ["Backend", ".NET"]
+    },
+    {
+      name: "Boring School",
+      activities: "No activities",
+      programmes: ["Frontend", "Backend"]
+    },
+    {
+      name: "Frontend School",
+      activities: ["drawing", "basketball"],
+      programmes: ["Frontend"]
+    }
+  ];
+
+  // let school_info = await get_Students(
+  //   " https://api.mocki.io/v2/01047e91/schools"
+  // );
+}
+
 renderData();
+listStudents(students_name);
+filterStudentsEdu();
+filterStudents(school_info);
