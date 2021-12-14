@@ -1,141 +1,217 @@
-let students_name = [];
-let school_info = [];
+let get_Students = async (URL) => {
+  let response = await fetch(URL);
+  let data = await response.json();
+  return data;
+};
 
-function listStudents(students_name) {
-  students_name.forEach((student) => {
-    let li = document.createElement("li");
-    li.textContent = student.firstName + " " + student.lastName;
-    document.querySelector("#studentList").appendChild(li);
-  });
-}
+async function getData() {
+  let students_name = await get_Students(
+    " https://api.mocki.io/v2/01047e91/students"
+  );
+  let school_info = await get_Students(
+    " https://api.mocki.io/v2/01047e91/schools"
+  );
 
-function filterStudentsEdu() {
-  let student_edu;
-  let edu_list = document.querySelector("#education");
-
-  let frontend = document.createElement("button");
-  let backend = document.createElement("button");
-  let net = document.createElement("button");
-  frontend.textContent = "Frontend";
-  backend.textContent = "Backend";
-  net.textContent = ".NET";
-  document.querySelector("#filters").append(frontend, backend, net);
-
-  //show students based on education == frontend
-  frontend.addEventListener("click", () => {
-    edu_list.innerHTML = "";
-    students_name.forEach((edu) => {
-      if (edu.programme === "Frontend") {
-        student_edu = document.createElement("li");
-        student_edu.textContent = edu.firstName;
-        edu_list.appendChild(student_edu);
-      }
+  //print the first and last name of each of the student.
+  function listStudents(students_name) {
+    students_name.forEach((student) => {
+      let li = document.createElement("li");
+      li.textContent = student.firstName + " " + student.lastName;
+      document.querySelector("#studentList").appendChild(li);
     });
-  });
-  //show students based on education == backend
-  backend.addEventListener("click", () => {
-    edu_list.innerHTML = "";
-    students_name.forEach((edu) => {
-      if (edu.programme === "Backend") {
-        student_edu = document.createElement("li");
-        student_edu.textContent = edu.firstName;
-        edu_list.appendChild(student_edu);
-      }
-    });
-  });
-  //show students based on education == .net
+  }
 
-  net.addEventListener("click", () => {
-    edu_list.innerHTML = "";
-    students_name.forEach((edu) => {
-      if (edu.programme === ".NET") {
-        student_edu = document.createElement("li");
-        student_edu.textContent = edu.firstName;
-        edu_list.appendChild(student_edu);
-      }
-    });
-  });
-}
-
-function filterStudents(school_info) {
-  let sort_list = document.querySelector("#age_names");
+  //Select the group of radiobuttons by name.
+  let inputs = document.getElementsByName("programme");
+  let orders = document.getElementsByName("order");
   let getSchoolBtn = document.querySelector("#getSchool");
+  let username = "";
 
-  let age_button = document.createElement("button");
-  let firstname_btn = document.createElement("button");
-  let lastname_btn = document.createElement("button");
+  //Filter students based on education.
+  function filterStudentsEdu() {
+    let button = document.querySelector("#button1");
+    let studentList_education = document.querySelector("#studentList_edu");
 
-  age_button.textContent = "Age";
-  firstname_btn.textContent = "First name";
-  lastname_btn.textContent = "Last name";
-  document
-    .querySelector("#other_buttons")
-    .append(age_button, firstname_btn, lastname_btn);
-
-  //sort students by age (ascending order)
-  age_button.addEventListener("click", () => {
-    sort_list.innerHTML = "";
-    students_name.sort((a, b) => {
-      return a.age - b.age;
-    });
-    students_name.forEach((student) => {
-      let student_age = document.createElement("li");
-      student_age.textContent = student.firstName + " " + student.age;
-      sort_list.appendChild(student_age);
-    });
-  });
-
-  //sort firstname of students alphabetically
-  firstname_btn.addEventListener("click", () => {
-    sort_list.innerHTML = "";
-    students_name.sort((a, b) => {
-      if (a.firstName < b.firstName) {
-        return -1;
+    button.addEventListener("click", () => {
+      let prog;
+      let sort_order;
+      studentList_education.innerHTML = "";
+      inputs.forEach((input) => {
+        if (input.checked) {
+          //Take the checked radiobutton (Frontend, Backend and .NET) value
+          //and assign to "prog" variable.
+          prog = input.value;
+        }
+      });
+      orders.forEach((order) => {
+        if (order.checked) {
+          //Take the checked radiobutton (ascending and descending buttons) value
+          //and assign to "sort_order" variable.
+          sort_order = order.value;
+        }
+      });
+      //Filter students based on their programme.
+      let filteredStudents = students_name.filter(
+        (student) => student.programme === prog
+      );
+      //Sort the filtered students in ascending order.
+      if (sort_order === "ascending") {
+        filteredStudents.sort((a, b) => {
+          if (a.firstName < b.firstName) {
+            return -1;
+          }
+          if (a.firstName > b.firstName) {
+            return 1;
+          }
+          return 0;
+        });
+        //Sort the filtered students in descending order.
+      } else if (sort_order === "descending") {
+        filteredStudents.sort((b, a) => {
+          if (a.firstName < b.firstName) {
+            return -1;
+          }
+          if (a.firstName > b.firstName) {
+            return 1;
+          }
+          return 0;
+        });
       }
-      if (a.firstName > b.firstName) {
-        return 1;
+      //Print the names in DOM.
+      filteredStudents.forEach((student) => {
+        let studentName = document.createElement("li");
+        studentName.textContent = student.firstName;
+        studentList_education.appendChild(studentName);
+        studentList_education.style.border = "solid";
+        studentList_education.style.color = "darkcyan";
+      });
+    });
+    inputs.checked = false;
+  }
+  //Filter the students based on age, first name and last name.
+  function age_first_last_name() {
+    let button2 = document.querySelector("#button2");
+    let list = document.querySelector("#age_name_list");
+
+    button2.addEventListener("click", () => {
+      let btn_value;
+      let sort_order;
+      list.innerHTML = "";
+      inputs.forEach((input) => {
+        if (input.checked) {
+          btn_value = input.value;
+        }
+      });
+      orders.forEach((order) => {
+        if (order.checked) {
+          sort_order = order.value;
+        }
+      });
+      //If the checked button's value is "age" and "ascending" or "descending", sort the
+      //students age in ascending and descending order respectively.
+      if (btn_value === "age") {
+        if (sort_order === "ascending") {
+          students_name.sort((a, b) => {
+            return a.age - b.age;
+          });
+        } else if (sort_order === "descending") {
+          students_name.sort((a, b) => {
+            return b.age - a.age;
+          });
+        }
+        //Sort students in ascending and descending order based on their first name.
+      } else if (btn_value === "firstName") {
+        if (sort_order === "ascending") {
+          students_name.sort((a, b) => {
+            if (a.firstName < b.firstName) {
+              return -1;
+            }
+            if (a.firstName > b.firstName) {
+              return 1;
+            }
+            return 0;
+          });
+        } else if (sort_order === "descending") {
+          students_name.sort((b, a) => {
+            if (a.firstName < b.firstName) {
+              return -1;
+            }
+            if (a.firstName > b.firstName) {
+              return 1;
+            }
+            return 0;
+          });
+        }
+        //Sort students in ascending and descending order based on their last name.
+      } else if (btn_value === "lastName") {
+        if (sort_order === "ascending") {
+          students_name.sort((a, b) => {
+            if (a.lastName < b.lastName) {
+              return -1;
+            }
+            if (a.lastName > b.lastName) {
+              return 1;
+            }
+            return 0;
+          });
+        } else if (sort_order === "descending") {
+          students_name.sort((b, a) => {
+            if (a.lastName < b.lastName) {
+              return -1;
+            }
+            if (a.lastName > b.lastName) {
+              return 1;
+            }
+            return 0;
+          });
+        }
       }
-      return 0;
-    });
 
-    students_name.forEach((student) => {
-      let firstName = document.createElement("li");
-      firstName.textContent = student.firstName;
-      sort_list.appendChild(firstName);
-    });
-  });
-
-  //sort lastname of students alphabetically
-  lastname_btn.addEventListener("click", () => {
-    sort_list.innerHTML = "";
-    students_name.sort((a, b) => {
-      if (a.lastName < b.lastName) {
-        return -1;
+      if (btn_value) {
+        students_name.forEach((student) => {
+          let names = document.createElement("li");
+          if (btn_value === "age" || btn_value === "firstName") {
+            names.textContent = student.firstName + "," + student.age;
+          } else if (btn_value === "lastName") {
+            names.textContent = student.lastName + " , " + student.firstName;
+          }
+          list.appendChild(names);
+          list.style.border = "solid";
+          list.style.color = "darkcyan";
+        });
       }
-      if (a.lastName > b.lastName) {
-        return 1;
-      }
-      return 0;
     });
-
-    students_name.forEach((student) => {
-      let lastName = document.createElement("li");
-      lastName.textContent = student.lastName + "," + student.firstName;
-      sort_list.appendChild(lastName);
-    });
-  });
-
+    inputs.checked = false;
+  }
+  //Check if the input field has a value or not.
+  function validateInput() {
+    username = document.querySelector("#name").value;
+    if (username.trim() === "") {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  // Show list of schools that matches student's hobbies and programme.
   getSchoolBtn.addEventListener("click", () => {
-    let username = document.querySelector("#name").value;
+    let school_list = document.querySelector("#schools");
+    school_list.innerHTML = "";
+    if (validateInput() === false) {
+      // console.log("Empty input");
+      return;
+    }
     let userfullname = username.toLowerCase().replaceAll(" ", "");
     let student_programme = "";
     let stu_hobby = [];
     let school_with_prog = [];
     let school_with_activity = [];
     let student_display_name = "";
+
     students_name.forEach((student) => {
       let fullname = student.firstName + student.lastName;
       fullname = fullname.toLowerCase();
+      //Check the name entered by user with the full name of the student
+      //for any matching letters( eg "han" = "hannah red"/ "gr" = "fiona grey")
       let regexp_name = fullname.match(userfullname);
 
       if (userfullname === fullname || regexp_name) {
@@ -144,167 +220,45 @@ function filterStudents(school_info) {
         student_display_name = student.firstName + " " + student.lastName;
       }
       if (regexp_name) {
-        //console.log("Did you mean " + fullname + "?");
         student_display_name = student.firstName + " " + student.lastName;
       }
     });
-
+    //Check if student programme matches with school's programmes.
     school_info.forEach((school) => {
       school.programmes.forEach((programme) => {
         if (student_programme === programme) {
-          // console.log(school.name);
-
-          school_with_prog.push(school.name);
-          // console.log(school_with_prog);
+          school_with_prog.push(school.name); //StuProg === SchProg
         }
       });
-
+      //Check if school activities is an array, loop through each activity and
+      //see if student hobbies matches with the school's activities.
       if (Array.isArray(school.activities)) {
         school.activities.forEach((activity) => {
           if (stu_hobby.includes(activity)) {
-            // console.log(school.name);
             school_with_activity.push(school.name);
           }
         });
       }
     });
+
     let display_name = document.createElement("p");
     display_name.textContent = student_display_name;
-    document.querySelector("#display_name").appendChild(display_name);
+    school_list.appendChild(display_name);
+
     school_with_prog.forEach((school) => {
       if (school_with_activity.includes(school)) {
-        // console.log(school);
-        let show_school = document.createElement("p");
+        let show_school = document.createElement("li");
         show_school.textContent = school;
-        document.querySelector("#schools").appendChild(show_school);
+        school_list.appendChild(show_school);
+        school_list.style.color = "indianred";
+        show_school.style.color = "darkcyan";
       }
     });
+    document.querySelector("#name").value = "";
   });
+
+  listStudents(students_name);
+  filterStudentsEdu();
+  age_first_last_name();
 }
-
-async function renderData() {
-  let get_Students = async (URL) => {
-    let response = await fetch(URL);
-    let data = await response.json();
-    return data;
-  };
-  students_name = [
-    {
-      firstName: "Marcus",
-      lastName: "Green",
-      age: "29",
-      hobbies: ["football"],
-      programme: "Frontend"
-    },
-    {
-      firstName: "Cassandra",
-      lastName: "White",
-      age: "18",
-      hobbies: ["chess", "gaming", "drawing"],
-      programme: "Backend"
-    },
-    {
-      firstName: "Hannah",
-      lastName: "Red",
-      age: "24",
-      hobbies: ["basketball", "gaming"],
-      programme: ".NET"
-    },
-    {
-      firstName: "Winston",
-      lastName: "Black",
-      age: "21",
-      hobbies: ["basketball", "football"],
-      programme: "Frontend"
-    },
-    {
-      firstName: "Maria",
-      lastName: "Scarlet",
-      age: "19",
-      hobbies: ["drawing", "chess"],
-      programme: "Backend"
-    },
-    {
-      firstName: "Ash",
-      lastName: "Yellow",
-      age: "35",
-      hobbies: ["gaming", "football"],
-      programme: ".NET"
-    },
-    {
-      firstName: "Leona",
-      lastName: "Grey",
-      age: "42",
-      hobbies: ["chess"],
-      programme: ".NET"
-    },
-    {
-      firstName: "Fiona",
-      lastName: "Grey",
-      age: "29",
-      hobbies: ["football"],
-      programme: "Backend"
-    },
-    {
-      firstName: "Anna",
-      lastName: "Forest",
-      age: "21",
-      hobbies: ["drawing"],
-      programme: "Frontend"
-    },
-    {
-      firstName: "Neshin",
-      lastName: "Pink",
-      age: "20",
-      hobbies: ["chess"],
-      programme: "Backend"
-    },
-    {
-      firstName: "Orlando",
-      lastName: "Beige",
-      age: "24",
-      hobbies: ["basketball", "drawing"],
-      programme: "Frontend"
-    }
-  ];
-  // let students_name = await get_Students(
-  //   " https://api.mocki.io/v2/01047e91/students"
-  // );
-
-  school_info = [
-    {
-      name: "Fun School",
-      activities: ["drawing", "chess", "football", "basketball", "gaming"],
-      programmes: []
-    },
-    {
-      name: "Data School",
-      activities: ["drawing", "chess", "gaming"],
-      programmes: [".NET", "Frontend"]
-    },
-    {
-      name: "Makrosoft School",
-      activities: ["football", "gaming"],
-      programmes: ["Backend", ".NET"]
-    },
-    {
-      name: "Boring School",
-      activities: "No activities",
-      programmes: ["Frontend", "Backend"]
-    },
-    {
-      name: "Frontend School",
-      activities: ["drawing", "basketball"],
-      programmes: ["Frontend"]
-    }
-  ];
-
-  // let school_info = await get_Students(
-  //   " https://api.mocki.io/v2/01047e91/schools"
-  // );
-}
-
-renderData();
-listStudents(students_name);
-filterStudentsEdu();
-filterStudents(school_info);
+getData();

@@ -4,24 +4,71 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Skolnsökningar</title>
+    <link rel="stylesheet" href="styles.css" />
+    <title>Static Template</title>
   </head>
   <body>
+    <div id="heading">
+      <h1>School applications</h1>
+    </div>
+
     <h2>List of Students</h2>
     <div id="studentList"></div>
     <div id="school_list"></div>
+
     <h2>Filter students based on the following education.</h2>
-    <!-- change to "following education and put age in another div" -->
-    <div id="filters"></div>
-    <div id="education"></div>
+    <div>
+      <input type="radio" name="programme" value="Frontend" id="choice1" />
+      <label for="choice1">Frontend</label>
+    </div>
+    <div>
+      <input type="radio" name="programme" value="Backend" id="choice2" />
+      <label for="choice2">Backend</label>
+    </div>
+    <div>
+      <input type="radio" name="programme" value=".NET" id="choice3" />
+      <label for="choice3">.Net</label>
+    </div>
+    <h3>Choose the order</h3>
+    <div id="order1">
+      <input type="radio" name="order" value="ascending" id="choiceA" />
+      <label for="choiceA">Ascending</label>
+      <input type="radio" name="order" value="descending" id="choiceB" />
+      <label for="choiceB">Descending</label>
+    </div>
+
+    <button id="button1">Show students</button>
+    <div id="studentList_edu"></div>
+
     <h2>Filter students based on the following.</h2>
-    <div id="other_buttons"></div>
-    <div id="age_names"></div>
+    <div>
+      <input type="radio" name="programme" value="age" id="choice4" />
+      <label for="choice4">Age</label>
+    </div>
+    <div>
+      <input type="radio" name="programme" value="firstName" id="choice5" />
+      <label for="choice5">First name</label>
+    </div>
+    <div>
+      <input type="radio" name="programme" value="lastName" id="choice6" />
+      <label for="choice6">Last name</label>
+    </div>
+    <h3>Choose the order</h3>
+    <div>
+      <input type="radio" name="order" value="ascending" id="choiceC" />
+      <label for="choiceC">Ascending</label>
+      <input type="radio" name="order" value="descending" id="choiceD" />
+      <label for="choiceD">Descending</label>
+    </div>
+
+    <button id="button2">Show students</button>
+    <div id="age_name_list"></div>
+
+    <h2>Enter the name of the student to see available schools.</h2>
     <div>
       <input type="text" id="name" />
       <button id="getSchool">Show school</button>
     </div>
-    <div id="display_name"></div>
     <div id="schools"></div>
     <script src="main.js"></script>
   </body>

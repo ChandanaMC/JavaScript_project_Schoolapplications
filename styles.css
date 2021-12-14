@@ -1,0 +1,36 @@
+body {
+    border: 2px solid black;
+    padding: 10px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  #heading {
+    border: 2px solid black;
+    text-align: center;
+    background-color: orange;
+  }
+  
+  h2 {
+    color: darkcyan;
+  }
+  
+  h3 {
+    margin: 5px;
+    color: chocolate;
+  }
+  
+  #studentList_edu {
+    padding: 10px;
+    margin: 10px;
+  }
+  
+  #age_name_list {
+    padding: 10px;
+    margin: 10px;
+  }
+  
+  button {
+    background-color: lightseagreen;
+    margin: 10px;
+  }
+  
